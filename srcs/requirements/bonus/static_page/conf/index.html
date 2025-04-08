@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>John Doe - Développeur Full Stack</title>
+    <style>
+      :root {
+        --primary-color: #2d3436;
+        --secondary-color: #0984e3;
+        --text-color: #2d3436;
+        --light-bg: #f5f6fa;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+      }
+
+      header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+      }
+
+      .profile-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+      }
+
+      .title {
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: #636e72;
+        font-size: 1.2rem;
+      }
+
+      .section {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .section h2 {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--light-bg);
+        padding-bottom: 0.5rem;
+      }
+
+      .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .skill-tag {
+        background-color: var(--light-bg);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+
+      .experience-item {
+        margin-bottom: 1.5rem;
+      }
+
+      .experience-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .experience-title {
+        font-weight: bold;
+        color: var(--secondary-color);
+      }
+
+      .experience-date {
+        color: #636e72;
+        font-size: 0.9rem;
+      }
+
+      .contact-info {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+      }
+
+      .contact-item {
+        color: white;
+        text-decoration: none;
+      }
+
+      .contact-item:hover {
+        color: var(--secondary-color);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="profile-container">
+        <div class="profile-header">
+          <div class="profile-pic">JD</div>
+          <h1>John Doe</h1>
+          <p class="subtitle">Développeur Full Stack</p>
+        </div>
+        <div class="contact-info">
+          <a href="mailto:john.doe@email.com" class="contact-item"
+            >john.doe@email.com</a
+          >
+          <span class="contact-item">+33 6 12 34 56 78</span>
+          <span class="contact-item">Paris, France</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="profile-container">
+      <section class="section">
+        <h2>À propos</h2>
+        <p>
+          Développeur Full Stack passionné avec plus de 5 ans d'expérience dans
+          le développement web et mobile. Spécialisé dans la création
+          d'applications performantes et évolutives. Fervent défenseur des
+          bonnes pratiques de développement et de l'architecture logicielle
+          propre.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Compétences</h2>
+        <div class="skills">
+          <span class="skill-tag">JavaScript/TypeScript</span>
+          <span class="skill-tag">React.js</span>
+          <span class="skill-tag">Node.js</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">Kubernetes</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">MongoDB</span>
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">CI/CD</span>
+          <span class="skill-tag">Agile/Scrum</span>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Expérience Professionnelle</h2>
+        <div class="experience-item">
+          <div class="experience-title">Lead Developer - TechCorp</div>
+          <div class="experience-date">2020 - Présent</div>
+          <p>
+            Direction technique d'une équipe de 5 développeurs. Mise en place de
+            l'architecture microservices et de la CI/CD. Amélioration des
+            performances de 40%.
+          </p>
+        </div>
+        <div class="experience-item">
+          <div class="experience-title">Full Stack Developer - StartupXYZ</div>
+          <div class="experience-date">2018 - 2020</div>
+          <p>
+            Développement full stack d'une application SaaS de gestion de projet
+            utilisée par plus de 10,000 utilisateurs.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Formation</h2>
+        <div class="experience-item">
+          <div class="experience-title">Master en Informatique</div>
+          <div class="experience-date">2018</div>
+          <p>Université de Paris - Spécialisation en Architecture Logicielle</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

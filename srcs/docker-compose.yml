@@ -1,0 +1,171 @@
+version: "3"
+
+services:
+  # Service MariaDB
+  mariadb:
+    container_name: mariadb
+    networks:
+      - inception
+    build:
+      context: requirements/mariadb
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    restart: unless-stopped
+    expose:
+      - "3306"
+
+  # Service WordPress
+  wordpress:
+    container_name: wordpress
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+    restart: on-failure
+    expose:
+      - "9000"
+
+  # Service Nginx
+  nginx:
+    container_name: nginx
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "443:443"
+    restart: on-failure
+
+  # Service Bonus
+  redis:
+    build:
+      context: ./requirements/bonus/redis
+    container_name: redis
+    networks:
+      - inception
+    restart: unless-stopped
+
+  ftp:
+    build:
+      context: ./requirements/bonus/ftp_server
+    container_name: ftp
+    ports:
+      - "20:20"
+      - "21:21"
+      - "21100-21110:21100-21110" # Ports pour le mode passif
+    volumes:
+      - wordpress:/var/ftp/wordpress
+    environment:
+      - FTP_USER=ftpuser
+      - FTP_PASS=password
+    networks:
+      - inception
+
+  static_page:
+    build: ./requirements/bonus/static_page
+    container_name: static_page
+    ports:
+      - "3000:3000"
+    networks:
+      - inception
+    restart: unless-stopped
+
+  adminer:
+    build:
+      context: ./requirements/bonus/adminer
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+
+  grafana:
+    build: ./requirements/bonus/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - inception
+    environment:
+      - GF_SERVER_HTTP_PORT=3001
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+
+  # Service Prometheus
+  prometheus:
+    build: ./requirements/bonus/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+    networks:
+      - inception
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - inception
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    restart: unless-stopped
+    networks:
+      - inception
+
+# Définition des volumes
+volumes:
+  wordpress:
+    driver: local
+  mariadb:
+    driver: local
+  grafana-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/grafana
+  prometheus-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER}/data/prometheus
+
+# Définition du réseau
+networks:
+  inception:
+    driver: bridge
