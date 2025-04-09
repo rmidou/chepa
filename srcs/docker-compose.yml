@@ -127,7 +127,8 @@ services:
       - inception
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor
+    build:
+      context: ./requirements/bonus/cadvisor
     container_name: cadvisor
     restart: unless-stopped
     volumes:
@@ -136,13 +137,12 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
-    ports:
-      - "8081:8080"
     networks:
       - inception
 
   node-exporter:
-    image: prom/node-exporter
+    build:
+      context: ./requirements/bonus/node_exporter
     container_name: node-exporter
     restart: unless-stopped
     networks:
