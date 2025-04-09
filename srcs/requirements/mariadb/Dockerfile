@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 
 # Installation de MariaDB et configuration initiale
 RUN apt-get update && apt-get install -y \

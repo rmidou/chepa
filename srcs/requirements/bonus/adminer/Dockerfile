@@ -1,13 +1,13 @@
-FROM debian:buster
+FROM debian:bullseye
 
 # Installation des dépendances
 RUN apt-get update && apt-get install -y \
-    php7.3 \
-    php7.3-fpm \
-    php7.3-mysql \
-    php7.3-common \
-    php7.3-curl \
-    php7.3-json \
+    php7.4 \
+    php7.4-fpm \
+    php7.4-mysql \
+    php7.4-common \
+    php7.4-curl \
+    php7.4-json \
     wget \
     && rm -rf /var/lib/apt/lists/*
 

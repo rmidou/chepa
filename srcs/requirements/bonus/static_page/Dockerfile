@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 
 # Installation de Python et des dépendances
 RUN apt-get update && apt-get install -y \

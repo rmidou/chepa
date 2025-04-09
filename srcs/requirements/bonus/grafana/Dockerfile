@@ -1,12 +1,29 @@
-FROM grafana/grafana:10.2.3
+FROM debian:bullseye
 
-USER root
+# Installation des dépendances
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Installation de curl
-RUN apk update && apk add --no-cache curl
+# Ajout du dépôt Grafana
+RUN curl -fsSL https://packages.grafana.com/gpg.key | gpg --dearmor -o /usr/share/keyrings/grafana-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/grafana-archive-keyring.gpg] https://packages.grafana.com/oss/deb stable main" | tee -a /etc/apt/sources.list.d/grafana.list
 
-# Retour à l'utilisateur grafana
-USER grafana
+# Installation de Grafana
+RUN apt-get update && apt-get install -y grafana \
+    && rm -rf /var/lib/apt/lists/*
+
+# Création des répertoires nécessaires
+RUN mkdir -p /var/lib/grafana \
+    && mkdir -p /var/log/grafana \
+    && mkdir -p /usr/share/grafana/data \
+    && chown -R grafana:grafana /var/lib/grafana \
+    && chown -R grafana:grafana /var/log/grafana \
+    && chown -R grafana:grafana /usr/share/grafana/data \
+    && chmod 755 /var/lib/grafana \
+    && chmod 755 /var/log/grafana \
+    && chmod 755 /usr/share/grafana/data
 
 # Copier la configuration personnalisée
 COPY conf/grafana.ini /etc/grafana/grafana.ini
@@ -18,3 +35,8 @@ ENV GF_SERVER_HTTP_PORT=3001
 ENV GF_SECURITY_ADMIN_USER=admin
 ENV GF_SECURITY_ADMIN_PASSWORD=admin
 ENV GF_USERS_ALLOW_SIGN_UP=false
+
+EXPOSE 3001
+
+USER grafana
+CMD ["grafana-server", "--config=/etc/grafana/grafana.ini", "--homepath=/usr/share/grafana"]
