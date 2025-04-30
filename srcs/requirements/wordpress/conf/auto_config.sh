@@ -1,7 +1,21 @@
 #!/bin/bash
 
-# Attendre que MariaDB soit prêt
-sleep 10
+# Attendre que le service MariaDB soit prêt
+max_tries=30  # Augmenter le nombre de tentatives
+count=0
+while [ $count -lt $max_tries ]; do
+    if mysql -h mariadb -u wp_user -ppassword wordpress -e "SELECT 1" &>/dev/null; then
+        break
+    fi
+    echo "[INFO] MariaDB is not ready yet. Waiting... ($((count + 1))/$max_tries)"
+    count=$((count + 1))
+    sleep 2
+done
+
+if [ $count -eq $max_tries ]; then
+    echo "[ERROR] MariaDB connection timeout"
+    exit 1
+fi
 
 cd /var/www/wordpress
 
@@ -23,10 +37,13 @@ if [ ! -f wp-config.php ]; then
         --skip-check \
         --force
 
+    # Attendre encore un peu pour s'assurer que la base est prête
+    sleep 5
+
     echo "[INFO] Installing WordPress core..."
     wp core install \
         --allow-root \
-        --url=nbiron.42.fr \
+        --url=$DOMAIN_NAME \
         --title="Inception WordPress" \
         --admin_user=$WP_ADMIN_USER \
         --admin_password=$WP_ADMIN_PASSWORD \
@@ -41,6 +58,14 @@ if [ ! -f wp-config.php ]; then
         --user_pass=$WP_PASSWORD \
         --role=author \
         --path='/var/www/wordpress' || true
+
+    echo "[INFO] Installing and enabling Redis Object Cache plugin..."
+    wp plugin install redis-cache --activate --allow-root --path='/var/www/wordpress'
+    wp redis enable --allow-root --path='/var/www/wordpress'
+    # Ajout de la configuration Redis dans wp-config.php si elle n'existe pas déjà
+    if ! grep -q "WP_REDIS_HOST" wp-config.php; then
+        echo "define('WP_REDIS_HOST', 'redis');" >> wp-config.php
+    fi
 fi
 
 echo "[INFO] Starting PHP-FPM..."

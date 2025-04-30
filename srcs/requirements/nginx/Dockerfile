@@ -19,11 +19,13 @@ COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY index.html /var/www/html/
 
 # Génération du certificat SSL auto-signé
+ARG DOMAIN_NAME
+ENV DOMAIN_NAME=${DOMAIN_NAME}
 RUN openssl req -x509 -nodes \
     -keyout /etc/nginx/ssl/inception.key \
     -out /etc/nginx/ssl/inception.crt \
     -days 365 \
-    -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=nbiron.42.fr/UID=login"
+    -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=${DOMAIN_NAME}/UID=nbiron"
 
 # Définir les bonnes permissions
 RUN chmod 600 /etc/nginx/ssl/inception.key \

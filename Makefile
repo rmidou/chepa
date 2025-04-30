@@ -13,8 +13,8 @@ clean: down
 
 fclean: clean
 	docker volume rm $$(docker volume ls -q)
-	sudo rm -rf /home/data/wordpress/*
-	sudo rm -rf /home/data/mariadb/*
+	sudo rm -rf /home/${USER}/data/wordpress/*
+	sudo rm -rf /home/${USER}/data/mariadb/*
 
 re: fclean all
 
